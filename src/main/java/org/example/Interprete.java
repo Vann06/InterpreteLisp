@@ -19,19 +19,23 @@ public class Interprete {
 
     public void handleAritmetica(String input) {
         LispExpression expression = parseAritmetica(input);
-        // Supongamos que LispExpression puede evaluar su propio valor
-        Object result = expression.evaluate(environment);
+        Object result = expression.evaluate(null);  // Pasamos null porque este ejemplo no usa el entorno aún.
         System.out.println("Resultado de la expresión aritmética: " + result);
     }
 
     private LispExpression parseAritmetica(String input) {
-        // Simplificaremos y asumiremos que solo hay operaciones binarias de la forma (+ 1 2)
-        String[] tokens = input.replaceAll("\\(", "").replaceAll("\\)", "").split("\\s+");
-        String operator = tokens[0];
-        Double operand1 = Double.valueOf(tokens[1]);
-        Double operand2 = Double.valueOf(tokens[2]);
+        // Elimina los paréntesis y divide el input por espacios
+        String[] tokens = input.trim().replaceAll("[()]", "").split("\\s+");
+        if (tokens.length != 3) {
+            System.out.println("Error: Formato de expresión aritmética incorrecto.");
+            return null;  // Deberías manejar este caso de error adecuadamente.
+        }
 
-        return new LispExpression(operator, operand1, operand2);
+        String operador = tokens[0];
+        double op1 = Double.parseDouble(tokens[1]);
+        double op2 = Double.parseDouble(tokens[2]);
+
+        return new LispExpression(operador, op1, op2);
     }
 
     public void handleDefun(String input) {

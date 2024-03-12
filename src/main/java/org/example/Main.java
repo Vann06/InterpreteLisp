@@ -1,5 +1,4 @@
 package org.example;
-
 import java.util.Scanner;
 
 public class Main {
@@ -7,8 +6,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Interprete interprete = new Interprete();
 
-        boolean running = true;
-        while (running) {
+        while (true) {
             System.out.println("\nQué opción desea realizar?");
             System.out.println("1. Aritmética");
             System.out.println("2. Defun");
@@ -16,14 +14,20 @@ public class Main {
             System.out.println("4. ATOM");
             System.out.println("5. SETQ");
             System.out.println("6. Salir");
-
             System.out.print("Ingrese su elección: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline left-over
+
+            String inputLine = scanner.nextLine(); // Lee toda entrada como texto
+            int choice;
+            try {
+                choice = Integer.parseInt(inputLine); // Intenta convertir la entrada de texto a un número
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Por favor, ingrese un número de opción.");
+                continue; // Continúa el bucle si la entrada no se puede convertir a número
+            }
 
             switch (choice) {
                 case 1:
-                    System.out.println("Ingrese la expresión aritmética en formato Lisp:");
+                    System.out.println("Ingrese la expresión aritmética en formato Lisp (ejemplo: (+ 3 4)):");
                     String aritmeticaInput = scanner.nextLine();
                     interprete.handleAritmetica(aritmeticaInput);
                     break;
@@ -47,14 +51,12 @@ public class Main {
                     break;
                 case 6:
                     System.out.println("Saliendo del intérprete.");
-                    running = false;
-                    break;
+                    scanner.close(); // Es importante cerrar el Scanner antes de salir
+                    return; // Sale del programa
                 default:
                     System.out.println("Opción no válida. Por favor, intente de nuevo.");
                     break;
             }
         }
-
-        scanner.close();
     }
 }
