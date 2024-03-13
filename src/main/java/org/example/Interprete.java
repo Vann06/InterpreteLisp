@@ -89,6 +89,38 @@ public class Interprete {
         System.out.println("Resultado del predicado: " + (resultado ? "T" : "NIL"));
     }
 
+    public boolean parenthesisBalanced(String codigo) {
+        int count = 0;
+        for (char c : codigo.toCharArray()) {
+            if (c == '(') {
+                count++;
+            } else if (c == ')') {
+                count--;
+                if (count < 0) {
+                    return false;
+                }
+            }
+        }
+        return count == 0;
+    }
+
+    public void handleSetq(String input) {
+        String[] palabras = input.replaceAll("[()]", "").trim().split("\\s+");
+
+        for (int i = 1; i < palabras.length; i += 2) {
+            // i = 0 es el setq
+            // Asegura que hay un par variable-valor antes de intentar acceder al array
+            if (i + 1 < palabras.length) {
+                String variable = palabras[i];
+                String valor = palabras[i + 1];
+                System.out.println(variable + " = " + valor);
+            } else {
+                System.out.println("Error: número impar de elementos en la instrucción setq.");
+                break;
+            }
+        }
+    }
+
     public void handleAtom(String input){
         if (input.startsWith("(") && input.endsWith(")")) {
             System.out.println("Resultado del predicado ATOM: NIL"); 
@@ -96,8 +128,6 @@ public class Interprete {
             System.out.println("Resultado del predicado ATOM: T");
         }
     }
-
-
 
 
 }

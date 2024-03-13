@@ -27,21 +27,41 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    System.out.println("Ingrese la expresión aritmética en formato Lisp (ejemplo: (+ 3 4)):");
-                    String aritmeticaInput = scanner.nextLine();
-                    interprete.handleAritmetica(aritmeticaInput);
+                    try {
+                        System.out.println("Ingrese la expresión aritmética en formato Lisp (ejemplo: (+ 3 4)):");
+                        String aritmeticaInput = scanner.nextLine();
+                        if (!aritmeticaInput.startsWith("(+") || !aritmeticaInput.startsWith("(-") ||
+                                !aritmeticaInput.startsWith("(/") || !aritmeticaInput.startsWith("(*") && !interprete.parenthesisBalanced(aritmeticaInput)) {
+                            System.out.println("El codigo LISP proporcionado no es compatible con aritmetica");
+                        }
+                        interprete.handleAritmetica(aritmeticaInput);
+                    } catch (Exception e) {
+                        System.out.println("Ingrese un dato válido por favor");
+                    }
                     break;
                 case 2:
-                    System.out.println("Ingrese la definición de la función en formato Lisp");
-                    String defunInput = scanner.nextLine();
-                    interprete.handleDefun(defunInput);
-
-
+                    try {
+                        System.out.println("Ingrese la definición de la función en formato Lisp (ejemplo: (defun suma (a b) (+ a b))");
+                        String defunInput = scanner.nextLine();
+                        if (!defunInput.startsWith("(defun") && !interprete.parenthesisBalanced(defunInput)) {
+                            System.out.println("El codigo LISP proporcionado no es compatible");
+                        }
+                        interprete.handleDefun(defunInput);
+                    } catch (Exception e) {
+                        System.out.println("Ingrese un dato válido por favor");
+                    }
                     break;
                 case 3:
-                    System.out.println("Ingrese el predicado en formato Lisp (ejemplo: (> 3 2)):");
-                    String predicadoInput = scanner.nextLine();
-                    interprete.handlePredicado(predicadoInput);
+                    try {
+                        System.out.println("Ingrese el predicado en formato Lisp (ejemplo: (> 3 2)):");
+                        String predicadoInput = scanner.nextLine();
+                        if (!interprete.parenthesisBalanced(predicadoInput)) {
+                            System.out.println("El codigo LISP proporcionado no es compatible");
+                        }
+                        interprete.handlePredicado(predicadoInput);
+                    } catch (Exception e) {
+                        System.out.println("Ingrese un dato válido por favor");
+                    }
                     break;
 
                 case 4:
@@ -50,12 +70,22 @@ public class Main {
                     interprete.handleAtom(atomInput);
                     break;
                 case 5:
-                    // Manejo de SETQ
+                    try {
+                        System.out.println("Ingrese el codigo de Lisp (ejemplo: (setq x 2))");
+                        String setQInput = scanner.nextLine();
+                        if (!setQInput.startsWith("(setq") && !interprete.parenthesisBalanced(setQInput)) {
+                            System.out.println("El codigo LISP proporcionado no es compatible con setq");
+                        } else {
+                            interprete.handleDefun(setQInput);
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Ingrese un dato válido por favor");
+                    }
                     break;
                 case 6:
                     System.out.println("Saliendo del intérprete.");
-                    scanner.close(); // Es importante cerrar el Scanner antes de salir
-                    return; // Sale del programa
+                    scanner.close();
+                    return;
                 default:
                     System.out.println("Opción no válida. Por favor, intente de nuevo.");
                     break;
