@@ -32,9 +32,7 @@ public class Interprete {
      * @param input La entrada a interpretar.
      */
     public void interpret(String input) {
-        // Aquí irá la lógica para parsear y evaluar la entrada.
         System.out.println("Usted ingresó: " + input);
-        // (Aquí iría el proceso de análisis y evaluación que implementaremos más adelante)
     }
 
     /**
@@ -43,16 +41,15 @@ public class Interprete {
      */
     public void handleAritmetica(String input) {
         LispExpression expression = parseAritmetica(input);
-        Object result = expression.evaluate(null);  // Pasamos null porque este ejemplo no usa el entorno aún.
+        Object result = expression.evaluate(null);
         System.out.println("Resultado de la expresión aritmética: " + result);
     }
 
     private LispExpression parseAritmetica(String input) {
-        // Elimina los paréntesis y divide el input por espacios
         String[] tokens = input.trim().replaceAll("[()]", "").split("\\s+");
         if (tokens.length != 3) {
             System.out.println("Error: Formato de expresión aritmética incorrecto.");
-            return null;  // Deberías manejar este caso de error adecuadamente.
+            return null;
         }
 
         String operador = tokens[0];
@@ -67,13 +64,9 @@ public class Interprete {
      * @param input La definición de la función.
      */
     public void handleDefun(String input) {
-        // Parsear la entrada y extraer el nombre de la función, parámetros y cuerpo.
-        // Este es un ejemplo simple y no maneja errores ni casos complejos.
         String[] parts = input.replaceAll("\\(", "").replaceAll("\\)", "").split("\\s+");
         if (parts[0].equalsIgnoreCase("defun") && parts.length > 3) {
             String functionName = parts[1];
-            // Aquí, podrías tener un método para analizar la lista de parámetros y el cuerpo de la función
-            // Por simplicidad, supongamos que siempre hay un solo parámetro y una sola operación en el cuerpo.
             List<String> parameters = Arrays.asList(parts[2]); // Esto es un supuesto simplificado
             String body = input.substring(input.indexOf(parts[3])); // Esto también es simplificado
 
