@@ -67,15 +67,31 @@ public class Interprete {
         String operator = input.substring(0, firstSpaceIndex);
         // El resto de la cadena contiene los operandos.
         String operandsStr = input.substring(firstSpaceIndex).trim();
-
-        Object[] operands = extractOperands(operandsStr);
-        if (operands.length != 2) {
-            System.out.println("Error: Formato de expresión aritmética incorrecto.");
-            return null;
+    
+        List<Object> operands = new ArrayList<>();
+        while (!operandsStr.isEmpty()) {
+            if (operandsStr.startsWith("(")) {
+                int endIndex = findClosingParenthesis(operandsStr);
+                String subExpr = operandsStr.substring(0, endIndex + 1);
+                operands.add(parseAritmetica(subExpr));  // Recursivamente parsea la subexpresión.
+                operandsStr = operandsStr.substring(endIndex + 1).trim();
+            } else {
+                // Encuentra el próximo espacio para separar el número actual del resto.
+                int nextSpaceIndex = operandsStr.indexOf(' ');
+                if (nextSpaceIndex == -1) {  // Es el último número.
+                    operands.add(Double.parseDouble(operandsStr));
+                    break;
+                } else {
+                    String numberStr = operandsStr.substring(0, nextSpaceIndex);
+                    operands.add(Double.parseDouble(numberStr));
+                    operandsStr = operandsStr.substring(nextSpaceIndex).trim();
+                }
+            }
         }
-
-        return new LispExpression(operator, operands[0], operands[1]);
+    
+        return new LispExpression(operator, operands.toArray());
     }
+    
 
     private Object[] extractOperands(String str) {
         List<Object> operands = new ArrayList<>();
