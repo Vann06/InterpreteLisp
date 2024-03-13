@@ -43,8 +43,11 @@ public class Main {
                     String predicadoInput = scanner.nextLine();
                     interprete.handlePredicado(predicadoInput);
                     break;
+
                 case 4:
-                    // Manejo de ATOM
+                    System.out.println("Ingrese el átomo en formato Lisp:");
+                    String atomInput = scanner.nextLine();
+                    interprete.handleAtom(atomInput);
                     break;
                 case 5:
                     // Manejo de SETQ

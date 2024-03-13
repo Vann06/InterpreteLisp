@@ -89,6 +89,14 @@ public class Interprete {
         System.out.println("Resultado del predicado: " + (resultado ? "T" : "NIL"));
     }
 
+    public void handleAtom(String input){
+        if (input.startsWith("(") && input.endsWith(")")) {
+            System.out.println("Resultado del predicado ATOM: NIL"); 
+        } else {
+            System.out.println("Resultado del predicado ATOM: T");
+        }
+    }
+
 
 
 
