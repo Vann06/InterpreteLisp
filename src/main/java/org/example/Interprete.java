@@ -11,6 +11,7 @@ package org.example;
  *
  * Clase que representa un intérprete simple para un lenguaje Lisp.
  */
+import java.util.ArrayList;
 import java.util.Stack;
 import java.util.List;
 import java.util.Arrays;
@@ -40,24 +41,76 @@ public class Interprete {
      * @param input La expresión aritmética a manejar.
      */
     public void handleAritmetica(String input) {
-        LispExpression expression = parseAritmetica(input);
-        Object result = expression.evaluate(null);
-        System.out.println("Resultado de la expresión aritmética: " + result);
+        try {
+            LispExpression expression = parseAritmetica(input);
+            if (expression != null) {
+                double result = expression.evaluate(null); // Aquí pasamos 'null' porque aún no estamos usando el 'Environment'.
+                System.out.println("Resultado de la expresión aritmética: " + result);
+            } else {
+                System.out.println("Error al parsear la expresión.");
+            }
+        } catch (ArithmeticException e) {
+            System.out.println("Error aritmético: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error en la expresión: " + e.getMessage());
+        }
     }
 
     private LispExpression parseAritmetica(String input) {
-        String[] tokens = input.trim().replaceAll("[()]", "").split("\\s+");
-        if (tokens.length != 3) {
+        input = input.trim();
+        // Asume que el primer caracter es '(' y el último es ')', y los elimina.
+        if (input.startsWith("(")) {
+            input = input.substring(1, input.length() - 1).trim();
+        }
+        // Encuentra el operador, que es la primera palabra en la entrada.
+        int firstSpaceIndex = input.indexOf(' ');
+        String operator = input.substring(0, firstSpaceIndex);
+        // El resto de la cadena contiene los operandos.
+        String operandsStr = input.substring(firstSpaceIndex).trim();
+
+        Object[] operands = extractOperands(operandsStr);
+        if (operands.length != 2) {
             System.out.println("Error: Formato de expresión aritmética incorrecto.");
             return null;
         }
 
-        String operador = tokens[0];
-        double op1 = Double.parseDouble(tokens[1]);
-        double op2 = Double.parseDouble(tokens[2]);
-
-        return new LispExpression(operador, op1, op2);
+        return new LispExpression(operator, operands[0], operands[1]);
     }
+
+    private Object[] extractOperands(String str) {
+        List<Object> operands = new ArrayList<>();
+        while (!str.isEmpty()) {
+            if (str.startsWith("(")) {
+                int endIndex = findClosingParenthesis(str);
+                String subExpr = str.substring(0, endIndex + 1);
+                operands.add(parseAritmetica(subExpr));  // Recursivamente parsea la subexpresión.
+                str = str.substring(endIndex + 1).trim();
+            } else {
+                // Encuentra el próximo espacio para separar el número actual del resto.
+                int nextSpaceIndex = str.indexOf(' ');
+                if (nextSpaceIndex == -1) {  // Es el último número.
+                    operands.add(Double.parseDouble(str));
+                    break;
+                } else {
+                    String numberStr = str.substring(0, nextSpaceIndex);
+                    operands.add(Double.parseDouble(numberStr));
+                    str = str.substring(nextSpaceIndex).trim();
+                }
+            }
+        }
+        return operands.toArray(new Object[0]);
+    }
+
+    private int findClosingParenthesis(String str) {
+        int open = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '(') open++;
+            if (str.charAt(i) == ')') open--;
+            if (open == 0) return i;  // Encontramos el paréntesis de cierre correspondiente.
+        }
+        return -1;  // No debería ocurrir si la entrada está bien formada.
+    }
+
 
     /**
      * Método para manejar definiciones de funciones.

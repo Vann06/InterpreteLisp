@@ -13,43 +13,32 @@ package org.example;
  */
 public class LispExpression {
     private String operator;
-    private double operand1;
-    private double operand2;
+    private Object operand1;  // Puede ser Double o LispExpression
+    private Object operand2;  // Puede ser Double o LispExpression
 
-    /**
-     * Constructor de la clase LispExpression.
-     * @param operator El operador de la expresión.
-     * @param operand1 El primer operando de la expresión.
-     * @param operand2 El segundo operando de la expresión.
-     */
-    public LispExpression(String operator, double operand1, double operand2) {
+    public LispExpression(String operator, Object operand1, Object operand2) {
         this.operator = operator;
         this.operand1 = operand1;
         this.operand2 = operand2;
     }
 
-    /**
-     * Evalúa la expresión y devuelve el resultado.
-     * @param env El entorno en el que se evalúa la expresión (actualmente no se utiliza).
-     * @return El resultado de la evaluación de la expresión.
-     * @throws ArithmeticException Si se intenta dividir por cero.
-     * @throws IllegalArgumentException Si el operador no es reconocido.
-     */
-    public double evaluate(Environment env) {  // Aunque env no se usa aquí, podría ser útil para futuras extensiones.
+    public double evaluate(Environment env) {
+        double op1 = operand1 instanceof LispExpression ? ((LispExpression) operand1).evaluate(env) : ((Double) operand1);
+        double op2 = operand2 instanceof LispExpression ? ((LispExpression) operand2).evaluate(env) : ((Double) operand2);
+
         switch (operator) {
             case "+":
-                return operand1 + operand2;
+                return op1 + op2;
             case "-":
-                return operand1 - operand2;
+                return op1 - op2;
             case "*":
-                return operand1 * operand2;
+                return op1 * op2;
             case "/":
-                if (operand2 == 0) {
-                    throw new ArithmeticException("División por cero.");
-                }
-                return operand1 / operand2;
+                if (op2 == 0) throw new ArithmeticException("División por cero.");
+                return op1 / op2;
             default:
                 throw new IllegalArgumentException("Operador desconocido: " + operator);
         }
     }
 }
+
