@@ -1,4 +1,16 @@
 package org.example;
+/**
+ * CC2016 - Algoritmos y Estructuras de Datos
+ * Departamento de Ciencias de la Computación
+ * Facultad de Ingeniería
+ * Sección 31
+ *
+ * Jorge Luis Felipe Aguilar Portillo - 23195
+ * Ricardo Arturo Godinez Sanchéz - 23247
+ * Vianka Vanessa Castro Ordoñez - 23201
+ *
+ * Clase Main
+ * */
 import java.util.Scanner;
 
 public class Main {
@@ -30,11 +42,12 @@ public class Main {
                     try {
                         System.out.println("Ingrese la expresión aritmética en formato Lisp (ejemplo: (+ 3 4)):");
                         String aritmeticaInput = scanner.nextLine();
-                        if (!aritmeticaInput.startsWith("(+") || !aritmeticaInput.startsWith("(-") ||
-                                !aritmeticaInput.startsWith("(/") || !aritmeticaInput.startsWith("(*") && !interprete.parenthesisBalanced(aritmeticaInput)) {
-                            System.out.println("El codigo LISP proporcionado no es compatible con aritmetica");
+                        if (!(aritmeticaInput.startsWith("(+") || aritmeticaInput.startsWith("(-") ||
+                                aritmeticaInput.startsWith("(/") || aritmeticaInput.startsWith("(*")) && !interprete.parenthesisBalanced(aritmeticaInput)) {
+                            System.out.println("El código LISP proporcionado no es compatible con aritmética");
+                        } else {
+                            interprete.handleAritmetica(aritmeticaInput);
                         }
-                        interprete.handleAritmetica(aritmeticaInput);
                     } catch (Exception e) {
                         System.out.println("Ingrese un dato válido por favor");
                     }
@@ -76,7 +89,7 @@ public class Main {
                         if (!setQInput.startsWith("(setq") && !interprete.parenthesisBalanced(setQInput)) {
                             System.out.println("El codigo LISP proporcionado no es compatible con setq");
                         } else {
-                            interprete.handleDefun(setQInput);
+                            interprete.handleSetq(setQInput);
                         }
                     } catch (Exception e) {
                         System.out.println("Ingrese un dato válido por favor");

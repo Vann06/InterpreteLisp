@@ -1,22 +1,46 @@
 package org.example;
+/**
+ * CC2016 - Algoritmos y Estructuras de Datos
+ * Departamento de Ciencias de la Computación
+ * Facultad de Ingeniería
+ * Sección 31
+ *
+ * Jorge Luis Felipe Aguilar Portillo - 23195
+ * Ricardo Arturo Godinez Sanchéz - 23247
+ * Vianka Vanessa Castro Ordoñez - 23201
+ *
+ * Clase que representa un intérprete simple para un lenguaje Lisp.
+ */
 import java.util.Stack;
 import java.util.List;
 import java.util.Arrays;
-
 public class Interprete {
 
     private Environment environment;
 
+    /**
+     * Constructor de la clase Interprete.
+     * Inicializa el entorno del intérprete.
+     */
     public Interprete() {
         this.environment = new Environment();
     }
 
+    /**
+     * Método para interpretar una entrada.
+     * Este método actualmente solo imprime la entrada recibida.
+     * @param input La entrada a interpretar.
+     */
     public void interpret(String input) {
         // Aquí irá la lógica para parsear y evaluar la entrada.
         System.out.println("Usted ingresó: " + input);
         // (Aquí iría el proceso de análisis y evaluación que implementaremos más adelante)
     }
 
+    /**
+     * Método para manejar expresiones aritméticas.
+     * @param input La expresión aritmética a manejar.
+     */
     public void handleAritmetica(String input) {
         LispExpression expression = parseAritmetica(input);
         Object result = expression.evaluate(null);  // Pasamos null porque este ejemplo no usa el entorno aún.
@@ -38,6 +62,10 @@ public class Interprete {
         return new LispExpression(operador, op1, op2);
     }
 
+    /**
+     * Método para manejar definiciones de funciones.
+     * @param input La definición de la función.
+     */
     public void handleDefun(String input) {
         // Parsear la entrada y extraer el nombre de la función, parámetros y cuerpo.
         // Este es un ejemplo simple y no maneja errores ni casos complejos.
@@ -57,6 +85,10 @@ public class Interprete {
         }
     }
 
+    /**
+     * Método para manejar predicados.
+     * @param input La entrada que representa un predicado.
+     */
     public void handlePredicado(String input) {
         // Parseamos la entrada y separamos el operador y los operandos.
         // Suponemos que la entrada es de la forma "(operador op1 op2)"
@@ -89,6 +121,11 @@ public class Interprete {
         System.out.println("Resultado del predicado: " + (resultado ? "T" : "NIL"));
     }
 
+    /**
+     * Método para verificar el balance de paréntesis en una cadena de código.
+     * @param codigo La cadena de código que se va a verificar.
+     * @return true si los paréntesis están balanceados, false en caso contrario.
+     */
     public boolean parenthesisBalanced(String codigo) {
         int count = 0;
         for (char c : codigo.toCharArray()) {
@@ -104,6 +141,10 @@ public class Interprete {
         return count == 0;
     }
 
+    /**
+     * Método para manejar instrucciones setq.
+     * @param input La instrucción setq.
+     */
     public void handleSetq(String input) {
         String[] palabras = input.replaceAll("[()]", "").trim().split("\\s+");
 
@@ -121,6 +162,10 @@ public class Interprete {
         }
     }
 
+    /**
+     * Método para manejar el predicado ATOM.
+     * @param input La entrada a evaluar.
+     */
     public void handleAtom(String input){
         if (input.startsWith("(") && input.endsWith(")")) {
             System.out.println("Resultado del predicado ATOM: NIL"); 
