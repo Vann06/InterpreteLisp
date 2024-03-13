@@ -28,13 +28,13 @@ public class Main {
             System.out.println("6. Salir");
             System.out.print("Ingrese su elección: ");
 
-            String inputLine = scanner.nextLine(); // Lee toda entrada como texto
+            String inputLine = scanner.nextLine();
             int choice;
             try {
-                choice = Integer.parseInt(inputLine); // Intenta convertir la entrada de texto a un número
+                choice = Integer.parseInt(inputLine);
             } catch (NumberFormatException e) {
                 System.out.println("Entrada inválida. Por favor, ingrese un número de opción.");
-                continue; // Continúa el bucle si la entrada no se puede convertir a número
+                continue;
             }
 
             switch (choice) {
@@ -78,9 +78,16 @@ public class Main {
                     break;
 
                 case 4:
-                    System.out.println("Ingrese el átomo en formato Lisp:");
-                    String atomInput = scanner.nextLine();
-                    interprete.handleAtom(atomInput);
+                    try {
+                        System.out.println("Ingrese el átomo en formato Lisp (ejemplo: (atom x)):");
+                        String atomInput = scanner.nextLine();
+                        if (!interprete.parenthesisBalanced(atomInput) && !atomInput.startsWith("(atom")) {
+                            System.out.println("El codigo LISP proporcionado no es compatible");
+                        }
+                        interprete.handleAtom(atomInput);
+                    } catch (Exception e) {
+                        System.out.println("Ingrese un dato válido por favor");
+                    }
                     break;
                 case 5:
                     try {

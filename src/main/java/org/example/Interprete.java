@@ -83,8 +83,7 @@ public class Interprete {
      * @param input La entrada que representa un predicado.
      */
     public void handlePredicado(String input) {
-        // Parseamos la entrada y separamos el operador y los operandos.
-        // Suponemos que la entrada es de la forma "(operador op1 op2)"
+
         String[] parts = input.replaceAll("\\(", "").replaceAll("\\)", "").trim().split("\\s+");
         if (parts.length != 3) {
             System.out.println("Formato de predicado incorrecto. Debe ser '(operador op1 op2)'.");
@@ -142,8 +141,7 @@ public class Interprete {
         String[] palabras = input.replaceAll("[()]", "").trim().split("\\s+");
 
         for (int i = 1; i < palabras.length; i += 2) {
-            // i = 0 es el setq
-            // Asegura que hay un par variable-valor antes de intentar acceder al array
+
             if (i + 1 < palabras.length) {
                 String variable = palabras[i];
                 String valor = palabras[i + 1];
