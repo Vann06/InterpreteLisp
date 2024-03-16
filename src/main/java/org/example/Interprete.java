@@ -259,7 +259,29 @@ public class Interprete {
      * Método para manejar el predicado ATOM.
      * @param input La entrada a evaluar.
      */
-    public void handleAtom(String input){
+    public void handleAtom(String input) {
+        input = handleVariable(input);
+    
+        // Creamos una instancia de Interprete
+        Interprete interprete = new Interprete();
+    
+        // Verificamos si la entrada es una expresión aritmética
+        if (interprete.parenthesisBalanced(input)) {
+            // Parseamos la expresión aritmética y evaluamos
+            LispExpression expression = interprete.parseAritmetica(input);
+            if (expression != null) {
+                double result = expression.evaluate(environment); // Utilizamos el environment para la evaluación
+                // Verificamos si el resultado es una lista
+                if (result % 1 == 0) {
+                    System.out.println("Resultado del predicado ATOM: NIL");
+                } else {
+                    System.out.println("Resultado del predicado ATOM: T");
+                }
+                return;
+            }
+        }
+    
+        // Si no es una expresión aritmética, consideramos que es un átomo
         if (input.startsWith("(") && input.endsWith(")")) {
             System.out.println("Resultado del predicado ATOM: NIL"); 
         } else {
