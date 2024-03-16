@@ -6,8 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="7d53a3fa-325e-4524-a0bc-5cdd3c438e78" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Environment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Environment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Interprete.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Interprete.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/LispExpression.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/LispExpression.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/LispVariable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/LispVariable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,17 +35,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;/Users/viankacastro/Desktop/InterpreteLisp/src/main/java/org/example/Main.java&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "onboarding.tips.debug.path": "/Users/viankacastro/Desktop/InterpreteLisp/src/main/java/org/example/Main.java"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -61,5 +63,16 @@
       <updated>1710200698518</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/LispExpression.java</url>
+          <line>15</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

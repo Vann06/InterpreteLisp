@@ -42,8 +42,7 @@ public class Main {
                     try {
                         System.out.println("Ingrese la expresión aritmética en formato Lisp (ejemplo: (+ 3 4)):");
                         String aritmeticaInput = scanner.nextLine();
-                        if (!(aritmeticaInput.startsWith("(+") || aritmeticaInput.startsWith("(-") ||
-                                aritmeticaInput.startsWith("(/") || aritmeticaInput.startsWith("(*")) && !interprete.parenthesisBalanced(aritmeticaInput)) {
+                        if (!interprete.parenthesisBalanced(aritmeticaInput)) {
                             System.out.println("El código LISP proporcionado no es compatible con aritmética");
                         } else {
                             interprete.handleAritmetica(aritmeticaInput);
@@ -56,7 +55,7 @@ public class Main {
                     try {
                         System.out.println("Ingrese la definición de la función en formato Lisp (ejemplo: (defun suma (a b) (+ a b))");
                         String defunInput = scanner.nextLine();
-                        if (!defunInput.startsWith("(defun") && !interprete.parenthesisBalanced(defunInput)) {
+                        if (!interprete.parenthesisBalanced(defunInput)) {
                             System.out.println("El codigo LISP proporcionado no es compatible");
                         }
                         interprete.handleDefun(defunInput);
@@ -81,7 +80,7 @@ public class Main {
                     try {
                         System.out.println("Ingrese el átomo en formato Lisp (ejemplo: (atom x)):");
                         String atomInput = scanner.nextLine();
-                        if (!interprete.parenthesisBalanced(atomInput) && !atomInput.startsWith("(atom")) {
+                        if (!interprete.parenthesisBalanced(atomInput)) {
                             System.out.println("El codigo LISP proporcionado no es compatible");
                         }
                         interprete.handleAtom(atomInput);
@@ -93,10 +92,12 @@ public class Main {
                     try {
                         System.out.println("Ingrese el codigo de Lisp (ejemplo: (setq x 2))");
                         String setQInput = scanner.nextLine();
-                        if (!setQInput.startsWith("(setq") && !interprete.parenthesisBalanced(setQInput)) {
+                        if (!interprete.parenthesisBalanced(setQInput)) {
                             System.out.println("El codigo LISP proporcionado no es compatible con setq");
                         } else {
                             interprete.handleSetq(setQInput);
+
+
                         }
                     } catch (Exception e) {
                         System.out.println("Ingrese un dato válido por favor");

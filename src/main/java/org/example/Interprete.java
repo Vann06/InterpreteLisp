@@ -33,14 +33,37 @@ public class Interprete {
      * @param input La entrada a interpretar.
      */
     public void interpret(String input) {
+        handleVariable(input);
         System.out.println("Usted ingresó: " + input);
     }
 
+    /**
+     * Reemplaza las variables presentes en la entrada por sus valores correspondientes
+     * definidos en el entorno y reconstruye la expresión con los valores reemplazados.
+     *
+     * @param input La entrada que puede contener variables.
+     * @return Una cadena con las variables reemplazadas por sus valores.
+     */
+    public String handleVariable(String input) {
+        String[] parts = input.replaceAll("[()]", "").trim().split("\\s+");
+        for (int i = 1; i < parts.length; i++) {
+            String palabra = parts[i];
+            //verifica si existe en el environment
+            if (environment.containsVariable(palabra)) {
+                String value = environment.getVariableValue(palabra);
+                parts[i] = value;
+                System.out.println("Se reemplazó '" + palabra + "' por '" + value + "' en la expresión.");
+            }
+        }
+        // Reconstruir el input con los valores reemplazados
+        return String.join(" ", parts);
+    }
     /**
      * Método para manejar expresiones aritméticas.
      * @param input La expresión aritmética a manejar.
      */
     public void handleAritmetica(String input) {
+        input = handleVariable(input);
         try {
             LispExpression expression = parseAritmetica(input);
             if (expression != null) {
@@ -57,6 +80,7 @@ public class Interprete {
     }
 
     private LispExpression parseAritmetica(String input) {
+        input = handleVariable(input);
         input = input.trim();
         // Asume que el primer caracter es '(' y el último es ')', y los elimina.
         if (input.startsWith("(")) {
@@ -133,6 +157,8 @@ public class Interprete {
      * @param input La definición de la función.
      */
     public void handleDefun(String input) {
+        input = handleVariable(input);
+
         String[] parts = input.replaceAll("\\(", "").replaceAll("\\)", "").split("\\s+");
         if (parts[0].equalsIgnoreCase("defun") && parts.length > 3) {
             String functionName = parts[1];
@@ -152,6 +178,7 @@ public class Interprete {
      * @param input La entrada que representa un predicado.
      */
     public void handlePredicado(String input) {
+        input = handleVariable(input);
 
         String[] parts = input.replaceAll("\\(", "").replaceAll("\\)", "").trim().split("\\s+");
         if (parts.length != 3) {
@@ -210,11 +237,17 @@ public class Interprete {
         String[] palabras = input.replaceAll("[()]", "").trim().split("\\s+");
 
         for (int i = 1; i < palabras.length; i += 2) {
-
             if (i + 1 < palabras.length) {
                 String variable = palabras[i];
                 String valor = palabras[i + 1];
-                System.out.println(variable + " = " + valor);
+                // Verificar si la variable ya está en el environment con hashmap
+                if (environment.containsVariable(variable)) {
+                    System.out.println("La variable '" + variable + "' ya está definida");
+                } else {
+                    // Agregar la variable al HashMap
+                    environment.defineVariable(variable, valor);
+                    System.out.println("Variable '" + variable + "' definida  con valor '" + valor );
+                }
             } else {
                 System.out.println("Error: número impar de elementos en la instrucción setq.");
                 break;

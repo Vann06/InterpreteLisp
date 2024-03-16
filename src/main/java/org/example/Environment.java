@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Environment {
-    private Map<String, LispVariable> variables;
+    private Map<String, Object> variables;
     private Map<String, LispFunction> functions;
     /**
      * Constructor de la clase Environment.
@@ -34,6 +34,46 @@ public class Environment {
     public void defineFunction(String name, LispFunction function) {
         functions.put(name, function);
     }
+    /**
+     * Define una variable en el entorno.
+     * @param name El nombre de la variable.
+     * @param value El valor de la variable.
+     */
+    public void defineVariable(String name, Object value) {
+        variables.put(name, value);
+    }
 
+    /**
+     * Obtiene una variable del entorno.
+     * @param name El nombre de la variable a obtener.
+     * @return La variable si existe, o null si no está definida.
+
+    public LispVariable getVariable(String name) {
+        return variables.get(name);
+    }
+        */
+
+
+    /**
+     * Obtiene una función del entorno.
+     * @param name El nombre de la función a obtener.
+     * @return La función si existe, o null si no está definida.
+     */
+    public LispFunction getFunction(String name) {
+        return functions.get(name);
+    }
+
+    public boolean containsVariable(String name){
+        return variables.containsKey(name);
+    }
+
+    public String getVariableValue(String name){
+        Object value = variables.get(name);
+        if(value instanceof Double){
+            return Double.toString((Double) value);
+        }else{
+            return value.toString();
+        }
+    }
 
 }

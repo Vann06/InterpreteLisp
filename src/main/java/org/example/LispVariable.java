@@ -25,4 +25,19 @@ public class LispVariable {
         this.value = value;
     }
 
+    /**
+     * Obtiene el valor actual de la variable.
+     * @return El valor de la variable.
+     */
+    public Object getValue() {
+        return value;
+    }
+    /**
+     * Establece el valor de la variable.
+     * @param value El nuevo valor de la variable.
+     */
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
 }
