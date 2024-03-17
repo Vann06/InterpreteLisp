@@ -6,10 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="7d53a3fa-325e-4524-a0bc-5cdd3c438e78" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Environment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Environment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Interprete.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Interprete.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/LispVariable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/LispVariable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/LispExpression.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/LispExpression.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +38,7 @@
     "Application.Main.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "No-menu",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "onboarding.tips.debug.path": "/Users/viankacastro/Desktop/InterpreteLisp/src/main/java/org/example/Main.java"
@@ -63,16 +61,5 @@
       <updated>1710200698518</updated>
     </task>
     <servers />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/example/LispExpression.java</url>
-          <line>15</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

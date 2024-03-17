@@ -27,39 +27,62 @@ public class LispExpression {
             throw new IllegalArgumentException("La expresión debe tener al menos dos operandos.");
         }
 
-        double result = evaluateOperator((String) operator, operands, env);
+        double result = evaluateOperator(operator, operands, env);
         return result;
     }
 
     private double evaluateOperator(String operator, Object[] operands, Environment env) {
-        double result = 0.0;
-        double op1 = getOperandValue(operands[0], env);
-        double op2 = getOperandValue(operands[1], env);
-
         switch (operator) {
             case "+":
-                result = op1 + op2;
-                break;
+                return sumarOperandos(operands, env);
             case "-":
-                result = op1 - op2;
-                break;
+                return restarOperandos(operands, env);
             case "*":
-                result = op1 * op2;
-                break;
+                return multiplicarOperandos(operands, env);
             case "/":
-                if (op2 == 0) {
-                    throw new ArithmeticException("División por cero.");
-                }
-                result = op1 / op2;
-                break;
+                return dividirOperandos(operands, env);
             default:
                 throw new IllegalArgumentException("Operador desconocido: " + operator);
         }
-
-        return result;
     }
 
-    private double getOperandValue(Object operand, Environment env) {
+    private double sumarOperandos(Object[] operands, Environment env) {
+        double resultado = 0.0;
+        for (Object operand : operands) {
+            resultado += obtenerValorOperando(operand, env);
+        }
+        return resultado;
+    }
+
+    private double restarOperandos(Object[] operands, Environment env) {
+        double resultado = obtenerValorOperando(operands[0], env);
+        for (int i = 1; i < operands.length; i++) {
+            resultado -= obtenerValorOperando(operands[i], env);
+        }
+        return resultado;
+    }
+
+    private double multiplicarOperandos(Object[] operands, Environment env) {
+        double resultado = 1.0;
+        for (Object operand : operands) {
+            resultado *= obtenerValorOperando(operand, env);
+        }
+        return resultado;
+    }
+
+    private double dividirOperandos(Object[] operands, Environment env) {
+        double resultado = obtenerValorOperando(operands[0], env);
+        for (int i = 1; i < operands.length; i++) {
+            double divisor = obtenerValorOperando(operands[i], env);
+            if (divisor == 0) {
+                throw new ArithmeticException("División por cero.");
+            }
+            resultado /= divisor;
+        }
+        return resultado;
+    }
+
+    private double obtenerValorOperando(Object operand, Environment env) {
         if (operand instanceof Double) {
             return (Double) operand;
         } else if (operand instanceof LispExpression) {
@@ -69,5 +92,3 @@ public class LispExpression {
         }
     }
 }
-
-

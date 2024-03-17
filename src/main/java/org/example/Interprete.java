@@ -29,7 +29,13 @@ public class Interprete {
 
     public void interpret(String input) {
         if (input.startsWith("(")) {
-            String comando = input.substring(1, input.indexOf(" "));
+            input = input.substring(1);
+            input = input.replaceAll("\\s+", " ").trim();
+
+            String[] parts = input.split("\\s+");
+
+            String comando = parts[0];
+
             switch (comando.toLowerCase()) {
                 case "defun":
                     handleDefun(input);
@@ -41,22 +47,29 @@ public class Interprete {
                     // Implementa la lógica para manejar COND aquí
                     System.out.println("Aún no se ha implementado COND.");
                     break;
+                case "'":
+                    // Implementa la lógica para manejar QUOTE aquí
+                    System.out.println("Aún no se ha implementado QUOTE.");
+                    break;
+                case "+":
+                case "-":
+                case "*":
+                case "/":
+                    handleAritmetica(input);
+                    break;
+                case "<":
+                case ">":
+                case "=":
+                    handlePredicado(input);
+                    break;
                 default:
                     System.out.println("Comando no reconocido: " + comando);
                     break;
             }
-        } else if (input.startsWith("'")) {
-            // Implementa la lógica para manejar QUOTE aquí
-            System.out.println("Aún no se ha implementado QUOTE.");
-        } else if (input.matches("[<=>].*")) {
-            handlePredicado(input);
-        } else if (input.matches("[+\\-*/].*")) {
-            handleAritmetica(input);
-        } else {
-            System.out.println("Comando no reconocido: " + input);
         }
+
     }
-    
+
 
     /**
      * Reemplaza las variables presentes en la entrada por sus valores correspondientes
@@ -112,7 +125,7 @@ public class Interprete {
         String operator = input.substring(0, firstSpaceIndex);
         // El resto de la cadena contiene los operandos.
         String operandsStr = input.substring(firstSpaceIndex).trim();
-    
+
         List<Object> operands = new ArrayList<>();
         while (!operandsStr.isEmpty()) {
             if (operandsStr.startsWith("(")) {
@@ -133,10 +146,10 @@ public class Interprete {
                 }
             }
         }
-    
+
         return new LispExpression(operator, operands.toArray());
     }
-    
+
 
     private Object[] extractOperands(String str) {
         List<Object> operands = new ArrayList<>();
