@@ -27,15 +27,36 @@ public class Interprete {
         this.environment = new Environment();
     }
 
-    /**
-     * Método para interpretar una entrada.
-     * Este método actualmente solo imprime la entrada recibida.
-     * @param input La entrada a interpretar.
-     */
     public void interpret(String input) {
-        handleVariable(input);
-        System.out.println("Usted ingresó: " + input);
+        if (input.startsWith("(")) {
+            String comando = input.substring(1, input.indexOf(" "));
+            switch (comando.toLowerCase()) {
+                case "defun":
+                    handleDefun(input);
+                    break;
+                case "setq":
+                    handleSetq(input);
+                    break;
+                case "cond":
+                    // Implementa la lógica para manejar COND aquí
+                    System.out.println("Aún no se ha implementado COND.");
+                    break;
+                default:
+                    System.out.println("Comando no reconocido: " + comando);
+                    break;
+            }
+        } else if (input.startsWith("'")) {
+            // Implementa la lógica para manejar QUOTE aquí
+            System.out.println("Aún no se ha implementado QUOTE.");
+        } else if (input.matches("[<=>].*")) {
+            handlePredicado(input);
+        } else if (input.matches("[+\\-*/].*")) {
+            handleAritmetica(input);
+        } else {
+            System.out.println("Comando no reconocido: " + input);
+        }
     }
+    
 
     /**
      * Reemplaza las variables presentes en la entrada por sus valores correspondientes
