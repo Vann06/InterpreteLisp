@@ -43,14 +43,9 @@ public class Interprete {
                 case "setq":
                     handleSetq(input);
                     break;
-                case "cond":
-                    // Implementa la lógica para manejar COND aquí
-                    System.out.println("Aún no se ha implementado COND.");
-                    break;
-                case "'":
-                    // Implementa la lógica para manejar QUOTE aquí
-                    System.out.println("Aún no se ha implementado QUOTE.");
-                    break;
+                case "atom": 
+                handleAtom(input);
+                break;
                 case "+":
                 case "-":
                 case "*":
@@ -289,39 +284,42 @@ public class Interprete {
         }
     }
 
-    /**
-     * Método para manejar el predicado ATOM.
-     * @param input La entrada a evaluar.
-     */
-    public void handleAtom(String input) {
-        input = handleVariable(input);
+/**
+ * Método para manejar el predicado ATOM.
+ * @param input La entrada a evaluar.
+ */
+public void handleAtom(String input) {
+    input = handleVariable(input);
+    // Eliminar paréntesis y espacios
+    input = input.replaceAll("[()]", "").trim();
     
-        // Creamos una instancia de Interprete
-        Interprete interprete = new Interprete();
+    // Verificar si 'x' es una función o un átomo
+    boolean esAtomo = isAtom(input);
     
-        // Verificamos si la entrada es una expresión aritmética
-        if (interprete.parenthesisBalanced(input)) {
-            // Parseamos la expresión aritmética y evaluamos
-            LispExpression expression = interprete.parseAritmetica(input);
-            if (expression != null) {
-                double result = expression.evaluate(environment); // Utilizamos el environment para la evaluación
-                // Verificamos si el resultado es una lista
-                if (result % 1 == 0) {
-                    System.out.println("Resultado del predicado ATOM: NIL");
-                } else {
-                    System.out.println("Resultado del predicado ATOM: T");
-                }
-                return;
-            }
-        }
-    
-        // Si no es una expresión aritmética, consideramos que es un átomo
-        if (input.startsWith("(") && input.endsWith(")")) {
-            System.out.println("Resultado del predicado ATOM: NIL"); 
-        } else {
-            System.out.println("Resultado del predicado ATOM: T");
-        }
-    }
+    // Imprimir el resultado
+    System.out.println("Resultado del predicado ATOM para '" + input + "': " + (esAtomo ? "T" : "NIL"));
+}
+
+/**
+ * Método para verificar si un objeto es una lista.
+ * @param obj El objeto a verificar.
+ * @return true si el objeto es una lista, false de lo contrario.
+ */
+private boolean isList(String obj) {
+    // Una lista es cualquier cosa que comience y termine con "(" y ")"
+    return obj.startsWith("(") && obj.endsWith(")");
+}
+
+/**
+ * Método para verificar si un objeto es un átomo.
+ * @param obj El objeto a verificar.
+ * @return true si el objeto es un átomo, false de lo contrario.
+ */
+private boolean isAtom(String obj) {
+    // Un átomo es cualquier cosa que no sea una lista
+    return !isList(obj);
+}
+
 
 
 }
