@@ -50,7 +50,8 @@ public class Interprete {
                 case "-":
                 case "*":
                 case "/":
-                    handleAritmetica(input);
+                    double result = handleAritmetica(input);
+                    System.out.println("Resultado de la expresión aritmética: " + result);
                     break;
                 case "<":
                 case ">":
@@ -91,34 +92,60 @@ public class Interprete {
      * Método para manejar expresiones aritméticas.
      * @param input La expresión aritmética a manejar.
      */
-    public void handleAritmetica(String input) {
-        input = handleVariable(input);
-        try {
-            LispExpression expression = parseAritmetica(input);
-            if (expression != null) {
-                double result = expression.evaluate(null); // Aquí pasamos 'null' porque aún no estamos usando el 'Environment'.
-                System.out.println("Resultado de la expresión aritmética: " + result);
-            } else {
-                System.out.println("Error al parsear la expresión.");
+    public double handleAritmetica(String input) {
+        input = input.replaceAll("[()]", "").trim();
+
+        String[] parts = input.split("\\s+");
+
+
+        // Obtener el operador al entrar
+        String operator = parts[0];
+
+        // Crear una lista para los operandos
+        List<Object> operands = new ArrayList<>();
+
+        // Iterar sobre las partes y agregar operandos a la lista
+        for (int i = 1; i < parts.length; i++) {
+            String part = parts[i];
+            // Intentar convertir la parte en un número
+            try {
+                double operand = Double.parseDouble(part);
+                operands.add(operand);
+            } catch (NumberFormatException e) {
+                // Si la conversión falla, asumir que es una variable y buscar su valor en el entorno
+                if (environment.containsVariable(part)) {
+                    // Agregar el valor de la variable como un double
+                    System.out.println("value" + environment.getVariableValue(part));
+                    double value = Double.parseDouble(environment.getVariableValue(part));
+                    operands.add(value);
+                }
+                else {
+                    // Si no es un número ni una variable, manejar la expresión anidada
+                    StringBuilder remainingExpression = new StringBuilder();
+                    remainingExpression.append(part); // Agregar el operador inicial
+                    for (int j = i + 1; j < parts.length; j++) {
+                        remainingExpression.append(" ").append(parts[j]); // Agregar los operandos restantes
+                    }
+                    // Agregar la expresión anidada a la lista de operandos
+                    operands.add(remainingExpression.toString());
+                    // Llamar nuevamente a handleAritmetica con la expresión anidada
+                    handleAritmetica(remainingExpression.toString());
+                    break; // Salir del bucle porque hemos manejado la expresión anidada
+                }
             }
-        } catch (ArithmeticException e) {
-            System.out.println("Error aritmético: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error en la expresión: " + e.getMessage());
         }
+        // Crear una expresión Lisp y evaluarla
+        LispExpression expression = new LispExpression(operator, operands.toArray());
+        double result = expression.evaluate(environment);
+        return result;
     }
 
     private LispExpression parseAritmetica(String input) {
         input = handleVariable(input);
-        input = input.trim();
-        // Asume que el primer caracter es '(' y el último es ')', y los elimina.
-        if (input.startsWith("(")) {
-            input = input.substring(1, input.length() - 1).trim();
-        }
-        // Encuentra el operador, que es la primera palabra en la entrada.
+
         int firstSpaceIndex = input.indexOf(' ');
         String operator = input.substring(0, firstSpaceIndex);
-        // El resto de la cadena contiene los operandos.
+
         String operandsStr = input.substring(firstSpaceIndex).trim();
 
         List<Object> operands = new ArrayList<>();
@@ -126,12 +153,11 @@ public class Interprete {
             if (operandsStr.startsWith("(")) {
                 int endIndex = findClosingParenthesis(operandsStr);
                 String subExpr = operandsStr.substring(0, endIndex + 1);
-                operands.add(parseAritmetica(subExpr));  // Recursivamente parsea la subexpresión.
+                operands.add(parseAritmetica(subExpr));
                 operandsStr = operandsStr.substring(endIndex + 1).trim();
             } else {
-                // Encuentra el próximo espacio para separar el número actual del resto.
                 int nextSpaceIndex = operandsStr.indexOf(' ');
-                if (nextSpaceIndex == -1) {  // Es el último número.
+                if (nextSpaceIndex == -1) {
                     operands.add(Double.parseDouble(operandsStr));
                     break;
                 } else {
@@ -141,7 +167,6 @@ public class Interprete {
                 }
             }
         }
-
         return new LispExpression(operator, operands.toArray());
     }
 
@@ -275,7 +300,6 @@ public class Interprete {
                 } else {
                     // Agregar la variable al HashMap
                     environment.defineVariable(variable, valor);
-                    System.out.println("Variable '" + variable + "' definida  con valor '" + valor );
                 }
             } else {
                 System.out.println("Error: número impar de elementos en la instrucción setq.");

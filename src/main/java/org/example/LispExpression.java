@@ -87,6 +87,11 @@ public class LispExpression {
             return (Double) operand;
         } else if (operand instanceof LispExpression) {
             return ((LispExpression) operand).evaluate(env);
+        } else if (operand instanceof String) {
+            // Si el operando es una cadena, intenta interpretarla como una expresión aritmética
+            Interprete interprete = new Interprete();
+            double result = interprete.handleAritmetica((String) operand);
+            return result;
         } else {
             throw new IllegalArgumentException("Tipo de operando no válido: " + operand.getClass().getSimpleName());
         }
