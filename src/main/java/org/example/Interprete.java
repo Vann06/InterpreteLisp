@@ -104,7 +104,9 @@ public class Interprete {
         return result;
     }
     
-    
+    public double testHandleAritmetica(String input) {
+        return handleAritmetica(input);
+    }
 
 
     /**
