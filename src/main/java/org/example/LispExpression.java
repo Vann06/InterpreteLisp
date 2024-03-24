@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Arrays;
+
 /**
  * CC2016 - Algoritmos y Estructuras de Datos
  * Departamento de Ciencias de la Computación
@@ -95,5 +97,45 @@ public class LispExpression {
         } else {
             throw new IllegalArgumentException("Tipo de operando no válido: " + operand.getClass().getSimpleName());
         }
+    }
+
+    /**
+     * Método para obtener el cuerpo de una expresión.
+     * @param input La expresión de la que se quiere obtener el cuerpo.
+     * @return El cuerpo de la expresión, o null si no se encuentra.
+     */
+    public String getBodyExpression(String input) {
+        // Eliminar paréntesis y espacios
+        input = input.replaceAll("[()]", "").trim();
+        
+        // Dividir el input en palabras
+        String[] palabras = input.split("\\s+");
+        
+        // Obtener el cuerpo de la expresión
+        String cuerpo = "";
+        for (int i = 1; i < palabras.length; i++) {
+            cuerpo += palabras[i] + " ";
+        }
+        
+        // Eliminar el espacio final
+        cuerpo = cuerpo.trim();
+        
+        // Devolver el cuerpo de la expresión
+        return cuerpo;
+    }
+    
+    public boolean isOperator(String input) {
+        // Definir los operadores válidos
+        String[] operadores = {"+", "-", "*", "/", "=", "<", ">", "and", "or", "not", "atom", "car", "cdr", "cons", "list", "cond", "lambda", "let", "let*", "quote"};
+        
+        // Verificar si el input es un operador válido
+        for (String operador : operadores) {
+            if (input.equals(operador)) {
+                return true;
+            }
+        }
+        
+        // Si no se encontró ningún operador válido, devolver false
+        return false;
     }
 }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Collections;
 public class Interprete {
 
     private Environment environment;
@@ -31,11 +32,11 @@ public class Interprete {
         if (input.startsWith("(")) {
             input = input.substring(1);
             input = input.replaceAll("\\s+", " ").trim();
-
+    
             String[] parts = input.split("\\s+");
-
+    
             String comando = parts[0];
-
+    
             switch (comando.toLowerCase()) {
                 case "defun":
                     handleDefun(input);
@@ -44,8 +45,8 @@ public class Interprete {
                     handleSetq(input);
                     break;
                 case "atom": 
-                handleAtom(input);
-                break;
+                    handleAtom(input);
+                    break;
                 case "+":
                 case "-":
                 case "*":
@@ -59,12 +60,51 @@ public class Interprete {
                     handlePredicado(input);
                     break;
                 default:
-                    System.out.println("Comando no reconocido: " + comando);
+                    // Check if it's a function call
+                    if (environment.containsFunction(comando)) {
+                        // Get the function object
+                        LispFunction function = environment.getFunction(comando);
+                        // Extract parameters from input
+                        String[] parameters = input.split("\\s+");
+                        // Evaluate the function body with the provided arguments
+                        double funcResult = evaluateFunction(function, parameters);
+                        System.out.println("Resultado de la función '" + comando + "': " + funcResult);
+                    } else {
+                        System.out.println("Comando no reconocido: " + comando);
+                    }
                     break;
             }
         }
-
     }
+    
+    private double evaluateFunction(LispFunction function, String[] arguments) {
+        Environment functionEnv = new Environment(environment);
+
+        for (int i = 0; i < function.getParameters().size(); i++) {
+            if (i < arguments.length) {
+                functionEnv.defineVariable(function.getParameters().get(i), arguments[i]);
+            } else {
+                System.out.println("Número incorrecto de argumentos para la función '" + function.getName() + "'");
+                return Double.NaN;
+            }
+        }
+
+        Interprete interpreter = new Interprete();
+        double result;
+        String functionBody = function.getBody();
+
+        if (functionBody.startsWith("(")) {
+            LispExpression expression = interpreter.parseAritmetica(functionBody);
+            result = expression.evaluate(functionEnv);
+        } else {
+            String resultStr = interpreter.handleVariable(functionBody);
+            result = Double.parseDouble(resultStr);
+        }
+
+        return result;
+    }
+    
+    
 
 
     /**
@@ -76,7 +116,7 @@ public class Interprete {
      */
     public String handleVariable(String input) {
         String[] parts = input.replaceAll("[()]", "").trim().split("\\s+");
-        for (int i = 1; i < parts.length; i++) {
+    for (int i = 1; i < parts.length; i++) {
             String palabra = parts[i];
             //verifica si existe en el environment
             if (environment.containsVariable(palabra)) {
@@ -210,22 +250,36 @@ public class Interprete {
      * Método para manejar definiciones de funciones.
      * @param input La definición de la función.
      */
-    public void handleDefun(String input) {
-        input = handleVariable(input);
+    private void handleDefun(String input) {
+    input = input.substring(1); // Quita el primer parentesis
+    input = input.substring(input.indexOf(" ") + 1); // Borra el comando 'Defun'
 
-        String[] parts = input.replaceAll("\\(", "").replaceAll("\\)", "").split("\\s+");
-        if (parts[0].equalsIgnoreCase("defun") && parts.length > 3) {
-            String functionName = parts[1];
-            List<String> parameters = Arrays.asList(parts[2]); // Esto es un supuesto simplificado
-            String body = input.substring(input.indexOf(parts[3])); // Esto también es simplificado
+    // Separa a las demas partes en nombre, parametros y cuerpo
+    String[] parts = input.split("\\(", 2);
+    String functionName = parts[0].trim();
 
-            LispFunction function = new LispFunction(functionName, parameters, body);
-            environment.defineFunction(functionName, function);
-            System.out.println("Función '" + functionName + "' definida correctamente.");
-        } else {
-            System.out.println("Error al definir la función. Asegúrese de que el formato sea el correcto.");
-        }
+    // Parametros
+    String parametersAndRest = parts[1].substring(0, parts[1].lastIndexOf(")"));
+    String[] parameters = parametersAndRest.split(",");
+
+    // Elimina espacios y parentesis sobrantes
+    for (int i = 0; i < parameters.length; i++) {
+        parameters[i] = parameters[i].replaceAll("\\s+", "").replace(")", "");
     }
+
+    // cuerpo de funcion
+    String body = parts[1].substring(parts[1].lastIndexOf(")") + 1).trim();
+
+    // Guardando funcion en Enviroment
+    List<String> paramsList = new ArrayList<>();
+    for (int i = 0; i < parameters.length; i++) {
+        paramsList.add(parameters[i]);
+    }
+    List<String> finalParameters = Collections.unmodifiableList(paramsList);
+    LispFunction function = new LispFunction(functionName, finalParameters, body);
+    environment.defineFunction(functionName, function);
+    System.out.println("La función '" + functionName + "' fue guardada.");
+}
 
     /**
      * Método para manejar predicados.

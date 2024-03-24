@@ -76,4 +76,21 @@ public class Environment {
         }
     }
 
+    public boolean containsFunction(String name) {
+        return functions.containsKey(name);
+    }
+
+    public Environment(Environment parent) {
+        this.variables = new HashMap<>(parent.variables);
+        this.functions = new HashMap<>(parent.functions);
+    }
+    
+    public void setVariableValue(String variableName, Object value) {
+
+        variables.put(variableName, value);
+
+    }
+
+    
+
 }

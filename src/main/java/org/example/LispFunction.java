@@ -31,4 +31,16 @@ public class LispFunction {
         this.body = body;
     }
 
+    public List<String> getParameters() {
+        return parameters;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public String getBody() {
+        return body;
+    }
+
 }
