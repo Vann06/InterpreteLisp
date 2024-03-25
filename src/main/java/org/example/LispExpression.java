@@ -19,11 +19,22 @@ public class LispExpression {
     private String operator;
     private Object[] operands;
 
+    /**
+     * extrae  el operador y los operandos de la funcion guardada por defun
+     * @param operator
+     * @param operands
+     */
+
     public LispExpression(String operator, Object[] operands) {
         this.operator = operator;
         this.operands = operands;
     }
 
+    /**
+     * evalua si el numero de operandos es correcto
+     * @param env
+     * @return
+     */
     public double evaluate(Environment env) {
         if (operands.length < 2) {
             throw new IllegalArgumentException("La expresión debe tener al menos dos operandos.");
@@ -32,6 +43,14 @@ public class LispExpression {
         double result = evaluateOperator(operator, operands, env);
         return result;
     }
+
+    /**
+     * Genera la funcion que guarda defun
+     * @param operator
+     * @param operands
+     * @param env
+     * @return
+     */
 
     private double evaluateOperator(String operator, Object[] operands, Environment env) {
         switch (operator) {
@@ -48,6 +67,13 @@ public class LispExpression {
         }
     }
 
+    /**
+     * suma los operandos de la funcion creada por defun
+     * @param operands
+     * @param env
+     * @return
+     */
+
     private double sumarOperandos(Object[] operands, Environment env) {
         double resultado = 0.0;
         for (Object operand : operands) {
@@ -55,6 +81,13 @@ public class LispExpression {
         }
         return resultado;
     }
+
+    /**
+     * resta los operandos de la funcion creada por defun
+     * @param operands
+     * @param env
+     * @return
+     */
 
     private double restarOperandos(Object[] operands, Environment env) {
         double resultado = obtenerValorOperando(operands[0], env);
@@ -64,6 +97,13 @@ public class LispExpression {
         return resultado;
     }
 
+    /**
+     * multiplica los operandos de la funcion creada por defun
+     * @param operands
+     * @param env
+     * @return
+     */
+
     private double multiplicarOperandos(Object[] operands, Environment env) {
         double resultado = 1.0;
         for (Object operand : operands) {
@@ -71,6 +111,13 @@ public class LispExpression {
         }
         return resultado;
     }
+
+    /**
+     * divide los operandos de la funcion creada por defun
+     * @param operands
+     * @param env
+     * @return
+     */
 
     private double dividirOperandos(Object[] operands, Environment env) {
         double resultado = obtenerValorOperando(operands[0], env);
@@ -83,6 +130,13 @@ public class LispExpression {
         }
         return resultado;
     }
+
+    /**
+     * obtiene los operandos de la funcion cuando es llamada
+     * @param operands
+     * @param env
+     * @return
+     */
 
     private double obtenerValorOperando(Object operand, Environment env) {
         if (operand instanceof Double) {

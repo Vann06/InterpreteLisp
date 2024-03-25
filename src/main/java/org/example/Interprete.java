@@ -88,34 +88,11 @@ public class Interprete {
         }
     }
 
-
-    private double evaluateFunction(LispFunction function, String[] arguments) {
-        Environment functionEnv = new Environment(environment);
-
-        for (int i = 0; i < function.getParameters().size(); i++) {
-            if (i < arguments.length) {
-                functionEnv.defineVariable(function.getParameters().get(i), arguments[i]);
-            } else {
-                System.out.println("Número incorrecto de argumentos para la función '" + function.getName() + "'");
-                return Double.NaN;
-            }
-        }
-
-        Interprete interpreter = new Interprete();
-        double result;
-        String functionBody = function.getBody();
-
-        if (functionBody.startsWith("(")) {
-            LispExpression expression = interpreter.parseAritmetica(functionBody);
-            result = expression.evaluate(functionEnv);
-        } else {
-            String resultStr = interpreter.handleVariable(functionBody);
-            result = Double.parseDouble(resultStr);
-        }
-
-        return result;
-    }
-    
+    /**
+     * clase usada para facilitar junit
+     * @param input
+     * @return
+     */
     public double testHandleAritmetica(String input) {
         return handleAritmetica(input);
     }
@@ -196,6 +173,11 @@ public class Interprete {
         return result;
     }
 
+    /**
+     * metodo que maneja expresiones aritmetricas
+     * @param input
+     * @return
+     */
     private LispExpression parseAritmetica(String input) {
         input = handleVariable(input);
 
@@ -226,30 +208,6 @@ public class Interprete {
         return new LispExpression(operator, operands.toArray());
     }
 
-
-    private Object[] extractOperands(String str) {
-        List<Object> operands = new ArrayList<>();
-        while (!str.isEmpty()) {
-            if (str.startsWith("(")) {
-                int endIndex = findClosingParenthesis(str);
-                String subExpr = str.substring(0, endIndex + 1);
-                operands.add(parseAritmetica(subExpr));  // Recursivamente parsea la subexpresión.
-                str = str.substring(endIndex + 1).trim();
-            } else {
-                // Encuentra el próximo espacio para separar el número actual del resto.
-                int nextSpaceIndex = str.indexOf(' ');
-                if (nextSpaceIndex == -1) {  // Es el último número.
-                    operands.add(Double.parseDouble(str));
-                    break;
-                } else {
-                    String numberStr = str.substring(0, nextSpaceIndex);
-                    operands.add(Double.parseDouble(numberStr));
-                    str = str.substring(nextSpaceIndex).trim();
-                }
-            }
-        }
-        return operands.toArray(new Object[0]);
-    }
 
     private int findClosingParenthesis(String str) {
         int open = 0;

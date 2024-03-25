@@ -1,8 +1,24 @@
 package org.example;
+/**
+ * CC2016 - Algoritmos y Estructuras de Datos
+ * Departamento de Ciencias de la Computación
+ * Facultad de Ingeniería
+ * Sección 31
+ *
+ * Jorge Luis Felipe Aguilar Portillo - 23195
+ * Ricardo Arturo Godinez Sanchéz - 23247
+ * Vianka Vanessa Castro Ordoñez - 23201
+ *
+ * Clase que representa un intérprete simple para un lenguaje Lisp.
+ */
 
 import java.util.Scanner;
 
 public class Main {
+    /**
+     * menu principal  del interprete, muestra las opciones 
+     * disponibles y llama a las funciones correspondientes
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Interprete interprete = new Interprete();
