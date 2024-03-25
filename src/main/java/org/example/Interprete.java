@@ -29,22 +29,31 @@ public class Interprete {
     }
 
     public void interpret(String input) {
+        if (input.isEmpty()) {
+            System.out.println("No se proporcionó ninguna entrada.");
+            return;
+        }
+
+        if (!input.startsWith("(") || !input.endsWith(")")) {
+            System.out.println("Entrada no válida: " + input);
+            return;
+        }
+
+
         if (input.startsWith("(")) {
-            input = input.substring(1);
+            input = input.substring(1, input.length() - 1).trim();
             input = input.replaceAll("\\s+", " ").trim();
-    
-            String[] parts = input.split("\\s+");
-    
-            String comando = parts[0];
-    
-            switch (comando.toLowerCase()) {
+
+            String comando = input.split("\\s+")[0].toLowerCase();
+
+            switch (comando) {
                 case "defun":
                     handleDefun(input);
                     break;
                 case "setq":
                     handleSetq(input);
                     break;
-                case "atom": 
+                case "atom":
                     handleAtom(input);
                     break;
                 case "+":
@@ -60,23 +69,26 @@ public class Interprete {
                     handlePredicado(input);
                     break;
                 default:
-                    // Check if it's a function call
-                    if (environment.containsFunction(comando)) {
-                        // Get the function object
-                        LispFunction function = environment.getFunction(comando);
-                        // Extract parameters from input
-                        String[] parameters = input.split("\\s+");
-                        // Evaluate the function body with the provided arguments
-                        double funcResult = evaluateFunction(function, parameters);
-                        System.out.println("Resultado de la función '" + comando + "': " + funcResult);
+                    // Extraer el nombre de la función y los argumentos
+                    String[] parts = input.split("\\s+", 2);
+                    String functionName = parts[0].trim();
+                    String arguments = parts[1].trim();
+
+                    LispFunction function = environment.getFunction(functionName);
+                    if (function != null) {
+                        String[] functionParts = function.getBody().split("\\s+");
+                        String operator = functionParts[1].trim();
+                        String operands = functionParts[1].trim();
+
+                        interpret("(" + operator + " " + arguments + ")");
                     } else {
-                        System.out.println("Comando no reconocido: " + comando);
+                        System.out.println("Función '" + functionName + "' no definida.");
                     }
-                    break;
             }
         }
     }
-    
+
+
     private double evaluateFunction(LispFunction function, String[] arguments) {
         Environment functionEnv = new Environment(environment);
 
@@ -136,6 +148,7 @@ public class Interprete {
      */
     public double handleAritmetica(String input) {
         input = input.replaceAll("[()]", "").trim();
+        input = input.replaceAll("\\s+", " ").trim();
 
         String[] parts = input.split("\\s+");
 
@@ -143,20 +156,22 @@ public class Interprete {
         // Obtener el operador al entrar
         String operator = parts[0];
 
-        // Crear una lista para los operandos
+
         List<Object> operands = new ArrayList<>();
 
-        // Iterar sobre las partes y agregar operandos a la lista
+
         for (int i = 1; i < parts.length; i++) {
             String part = parts[i];
-            // Intentar convertir la parte en un número
+            if (part.equals("(")) {
+                continue;
+            }
+
             try {
                 double operand = Double.parseDouble(part);
                 operands.add(operand);
             } catch (NumberFormatException e) {
                 // Si la conversión falla, asumir que es una variable y buscar su valor en el entorno
                 if (environment.containsVariable(part)) {
-                    // Agregar el valor de la variable como un double
                     System.out.println("value" + environment.getVariableValue(part));
                     double value = Double.parseDouble(environment.getVariableValue(part));
                     operands.add(value);
@@ -164,19 +179,18 @@ public class Interprete {
                 else {
                     // Si no es un número ni una variable, manejar la expresión anidada
                     StringBuilder remainingExpression = new StringBuilder();
-                    remainingExpression.append(part); // Agregar el operador inicial
+                    remainingExpression.append(part);
                     for (int j = i + 1; j < parts.length; j++) {
-                        remainingExpression.append(" ").append(parts[j]); // Agregar los operandos restantes
+                        remainingExpression.append(" ").append(parts[j]);
                     }
                     // Agregar la expresión anidada a la lista de operandos
                     operands.add(remainingExpression.toString());
                     // Llamar nuevamente a handleAritmetica con la expresión anidada
-                    handleAritmetica(remainingExpression.toString());
-                    break; // Salir del bucle porque hemos manejado la expresión anidada
+                    handleAritmetica("( " + remainingExpression.toString());
+                    break;
                 }
             }
         }
-        // Crear una expresión Lisp y evaluarla
         LispExpression expression = new LispExpression(operator, operands.toArray());
         double result = expression.evaluate(environment);
         return result;
@@ -252,41 +266,45 @@ public class Interprete {
      * Método para manejar definiciones de funciones.
      * @param input La definición de la función.
      */
-    private void handleDefun(String input) {
-    input = input.substring(1); // Quita el primer parentesis
-    input = input.substring(input.indexOf(" ") + 1); // Borra el comando 'Defun'
+    public void handleDefun(String input) {
+            // Dividir la entrada en partes usando el espacio como separador
+            String[] parts = input.split("\\s+");
 
-    // Separa a las demas partes en nombre, parametros y cuerpo
-    String[] parts = input.split("\\(", 2);
-    String functionName = parts[0].trim();
+            // Verificar si la entrada tiene al menos 4 partes
+            if (parts.length < 4) {
+                System.out.println("Error al definir la función. La definición incompleta.");
+                return;
+            }
 
-    // Parametros
-    String parametersAndRest = parts[1].substring(0, parts[1].lastIndexOf(")"));
-    String[] parameters = parametersAndRest.split(",");
+            // El primer elemento es el nombre de la función
+            String functionName = parts[1];
 
-    // Elimina espacios y parentesis sobrantes
-    for (int i = 0; i < parameters.length; i++) {
-        parameters[i] = parameters[i].replaceAll("\\s+", "").replace(")", "");
+            // Extraer los parámetros entre paréntesis
+            int openParenIndex = input.indexOf("(");
+            int closeParenIndex = input.indexOf(")");
+            if (openParenIndex == -1 || closeParenIndex == -1 || openParenIndex >= closeParenIndex) {
+                System.out.println("Error al definir la función. Paréntesis de parámetros faltantes o mal posicionados.");
+                return;
+            }
+            String parametersStr = input.substring(openParenIndex + 1, closeParenIndex);
+            // Dividir los parámetros usando la coma como separador
+            List<String> parameters = Arrays.asList(parametersStr.split(","));
+
+            // El cuerpo de la función es la parte restante después del último paréntesis cerrado
+            String body = input.substring(closeParenIndex + 1).trim();
+
+            // Crear la función y agregarla al entorno
+            LispFunction function = new LispFunction(functionName, parameters, body);
+            environment.defineFunction(functionName, function);
+            System.out.println("Función '" + functionName + "' definida correctamente.");
     }
 
-    // cuerpo de funcion
-    String body = parts[1].substring(parts[1].lastIndexOf(")") + 1).trim();
 
-    // Guardando funcion en Enviroment
-    List<String> paramsList = new ArrayList<>();
-    for (int i = 0; i < parameters.length; i++) {
-        paramsList.add(parameters[i]);
-    }
-    List<String> finalParameters = Collections.unmodifiableList(paramsList);
-    LispFunction function = new LispFunction(functionName, finalParameters, body);
-    environment.defineFunction(functionName, function);
-    System.out.println("La función '" + functionName + "' fue guardada.");
-}
 
-    /**
-     * Método para manejar predicados.
-     * @param input La entrada que representa un predicado.
-     */
+        /**
+         * Método para manejar predicados.
+         * @param input La entrada que representa un predicado.
+         */
     public void handlePredicado(String input) {
         input = handleVariable(input);
 
